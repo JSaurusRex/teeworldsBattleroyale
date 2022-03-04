@@ -2476,9 +2476,9 @@ void CGameContext::DeleteBot(int i) {
 }
 
 bool CGameContext::AddBot(int i, bool UseDropPlayer) {
-	if (!g_Config.m_SvBotsEnabled) {
-		return false;
-	}
+	// if (!g_Config.m_SvBotsEnabled) {
+	// 	return false;
+	// }
 	int StartTeam = g_Config.m_SvTournamentMode ? TEAM_SPECTATORS : m_pController->GetAutoTeam(i);
 	if(StartTeam == TEAM_SPECTATORS)
 		return false;
@@ -2555,15 +2555,15 @@ void CGameContext::CheckBotNumber() {
 			PlayerCount++;
 	}
 	if(!PlayerCount)
-		BotNumber += g_Config.m_SvBotSlots;
+		BotNumber += 16;
 
-	int MaxCount = g_Config.m_SvBotSlots;
-	if (g_Config.m_SvBotVsHuman) {
-		MaxCount = PlayerCount;
-	}
-	if (!g_Config.m_SvBotsEnabled) {
-		MaxCount = 0;
-	}
+	int MaxCount = 16;
+	// if (g_Config.m_SvBotVsHuman) {
+	// 	MaxCount = PlayerCount;
+	// }
+	// if (!g_Config.m_SvBotsEnabled) {
+	// 	MaxCount = 0;
+	// }
 
 	// Remove bot excedent
 	if(BotNumber-MaxCount > 0)	{

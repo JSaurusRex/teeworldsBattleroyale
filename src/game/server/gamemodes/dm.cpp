@@ -27,7 +27,7 @@ int winner = 0;
 void CGameControllerDM::Tick()
 {
 	IGameController::Tick();
-
+	
 	if(m_Warmup)
 		return;
 
@@ -57,7 +57,7 @@ void CGameControllerDM::Tick()
 	
 	
 	
-	if(highestAmountPlayers > 1)
+	if(highestAmountPlayers > 0)
 		rotation++;
 	
 	vec2 offset = vec2(sin(rotation), cos(rotation))*radius;
@@ -70,12 +70,13 @@ void CGameControllerDM::Tick()
 	GameServer()->CreateEmptyExplosion(mid + offset);
 	
 	int time = GetRoundTick();
-	if(time % 7000 ==6000)
+	int shrinkTime = 5000 - max(4000, time / 20);
+	if(time % shrinkTime ==shrinkTime *0.8)
 		GameServer()->SendChat(-1, -2, "border shrinking");
-	if(time % 7000 ==6999)
+	if(time % shrinkTime ==shrinkTime-1)
 		GameServer()->SendChat(-1, -2, "border stopped");
-	if(time % 7000 > 6000)
-		radius -= min(max((int)(radius * 0.001), 1), 10);
+	if(time % shrinkTime > shrinkTime * 0.8)
+		radius -= min(max((int)(radius * 0.005), 1), 10);
 
 	if(rotation < 50)
 	{
@@ -87,6 +88,16 @@ void CGameControllerDM::Tick()
 			//printf("%i   %i", dist, radius);
 			if(dist > radius)
 				radius = dist + 1000;
+		}
+	}else if (rotation == 50)
+	{
+		for(int i = 0; i < MAX_CLIENTS; i++)
+		{
+			if(!GameServer()->m_apPlayers[i])
+			{
+				
+				printf("Adding Bot!!!   %i\n", GameServer()->AddBot(i));
+			}
 		}
 	}
 		//-= 1;
@@ -130,7 +141,7 @@ void CGameControllerDM::Tick()
 	// 	StartRound();
 	// 	DoWarmup(5);
 	// }
-	if(playersAlive == 1 && highestAmountPlayers > 1 && GetRoundTick() > 66)
+	if(playersAlive == 1 && rotation > 50)
 	{
 
 		int type = rand()%3;
