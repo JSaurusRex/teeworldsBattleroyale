@@ -70,8 +70,12 @@ void CGameControllerDM::Tick()
 	GameServer()->CreateEmptyExplosion(mid + offset);
 	
 	int time = GetRoundTick();
-	if(time % 2000 < 1000)
-		radius -= min(max((int)(radius * 0.001), 1), 2);
+	if(time % 7000 ==6000)
+		GameServer()->SendChat(-1, -2, "border shrinking");
+	if(time % 7000 ==6999)
+		GameServer()->SendChat(-1, -2, "border stopped");
+	if(time % 7000 > 6000)
+		radius -= min(max((int)(radius * 0.001), 1), 10);
 
 	if(rotation < 50)
 	{
